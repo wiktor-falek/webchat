@@ -1,11 +1,13 @@
 import winston from 'winston';
 import {format} from 'winston';
 
+import dotenv from "dotenv"; dotenv.config();
+
 
 const tsFormat = () => ( new Date() ).toLocaleDateString() + ' - ' + ( new Date() ).toLocaleTimeString();
 
 const logger = winston.createLogger({
-    level: 'info',
+    level: process.env.LEVEL || "info",
     format: format.combine(
         format.timestamp({
             format: 'YYYY-MM-DD HH:mm:ss'
