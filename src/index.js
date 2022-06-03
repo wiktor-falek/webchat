@@ -27,9 +27,14 @@ const io = new Server(server);
 
 io.on("connection", (socket) => {
     logger.info("user connected");
+    socket.broadcast.emit('connection', 'new connection');
     socket.on("disconnect", () => {
         logger.info("user disconnected");
     });
+    socket.on("message", (msg) => {
+        logger.info(`message: '${msg}'`);
+        io.emit('message', msg);
+    })
 });
 
 server.listen(process.env.PORT || 3000, () => {
