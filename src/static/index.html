@@ -23,6 +23,9 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script defer>
+      let username = "Anonymous";
+      username = window.prompt("Enter your nickname", "Anonymous");
+
       var socket = io();
 
       var messages = document.getElementById('messages');
@@ -31,15 +34,16 @@
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
+        var message = {content: input.value, author: username};
         if (input.value) {
-          socket.emit('message', input.value);
+          socket.emit('message', message);
           input.value = '';
         }
       })
 
-      socket.on('message', function(msg) {
+      socket.on('message', function(data) {
         var item = document.createElement('li');
-        item.textContent = msg;
+        item.textContent = data.author + ": " + data.content;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });

@@ -31,9 +31,9 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         logger.info("user disconnected");
     });
-    socket.on("message", (msg) => {
-        logger.info(`message: '${msg}'`);
-        io.emit('message', msg);
+    socket.on("message", (data) => {
+        logger.info(`${data.author}: '${data.content}'`);
+        io.emit('message', data);
     })
 });
 
