@@ -23,8 +23,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script defer>
-      let username = "Anonymous";
-      username = window.prompt("Enter your nickname", "Anonymous");
+      let username = window.prompt("Enter your nickname", "Anonymous") || "Anonymous";
 
       var socket = io();
 
