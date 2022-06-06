@@ -8,6 +8,8 @@ import cors from "cors";
 import path from "path";
 
 import logger from "./logger.js";
+import Client from './Client.js';
+import ClientHandler from './ClientHandler.js';
 
 
 // express
@@ -25,11 +27,32 @@ app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}))
 const server = http.createServer(app);
 const io = new Server(server);
 
+const allJoinMessages = [
+    "just arrived",
+    "has joined",
+    "joined the party",
+    "just landed",
+    "showed up",
+    "is here",
+]
+
 io.on("connection", (socket) => {
-    logger.info("user connected");
-    socket.broadcast.emit('connection', 'new connection');
+    const username = socket.request._query['username'];
+    logger.info(`user '${username}' connected`);
+
+    const client = new Client(username);
+    ClientHandler.add(client);
+    ClientHandler.logClients();
+
+    socket.broadcast.emit('connection', {
+        'username': username,
+        'joinMessage': allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)] || "joined"
+    });
+    socket.broadcast.emit('online', ClientHandler.onlineUsers);
     socket.on("disconnect", () => {
-        logger.info("user disconnected");
+        logger.info(`user '${username}' disconnected`);
+        ClientHandler.remove(client);
+        ClientHandler.logClients();
     });
     socket.on("message", (data) => {
         logger.info(`${data.author}: '${data.content}'`);
