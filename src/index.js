@@ -42,17 +42,17 @@ io.on("connection", (socket) => {
 
     const client = new Client(username);
     ClientHandler.add(client);
-    ClientHandler.logClients();
+    
+    socket.emit('online', ClientHandler.onlineUsers);
 
     socket.broadcast.emit('connection', {
         'username': username,
         'joinMessage': allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)] || "joined"
     });
-    socket.broadcast.emit('online', ClientHandler.onlineUsers);
+
     socket.on("disconnect", () => {
         logger.info(`user '${username}' disconnected`);
         ClientHandler.remove(client);
-        ClientHandler.logClients();
     });
     socket.on("message", (data) => {
         logger.info(`${data.author}: '${data.content}'`);
