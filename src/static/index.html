@@ -47,11 +47,35 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      socket.on('connection', function(msg) {
-        var item = document.createElement('li');
-        item.style.color = '#eb5e34';
-        item.textContent = msg.username + " " + msg.joinMessage;
-        messages.appendChild(item);
+      socket.on('connection', function(data) {
+        var username = data.username;
+        var text = data.message; //"abc {{username}} def"
+
+        var texts = text.split("{{username}}");
+        var beforeText = texts[0],
+            afterText = texts[1];
+
+        var listItem = document.createElement("li");
+
+        var before = document.createElement("span");
+        before.style.color = '#eb5e34';
+        before.textContent = beforeText;
+
+        var nickname = document.createElement("span");
+        nickname.style.color = '#111111';
+        nickname.textContent = username;
+
+        var after = document.createElement("span"); 
+        after.style.color = '#eb5e34';
+        after.textContent = afterText;
+
+        listItem.appendChild(before);
+        listItem.appendChild(nickname);
+        listItem.appendChild(after);
+
+        console.log(beforeText+nickname+afterText)
+        
+        messages.appendChild(listItem);
         window.scrollTo(0, document.body.scrollHeight);
       })
 
