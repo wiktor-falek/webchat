@@ -3,7 +3,7 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
-      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
       #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
@@ -16,15 +16,18 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" autofocus /><button>Send</button>
-    </form>
+    <div id='app'>
+      <ul id='messages'></ul>
+      <form id='form' action=''>
+        <input id='input' autocomplete='off' autofocus /><button>Send</button>
+      </form>
+    </div>
 
-    <script src="/socket.io/socket.io.js"></script>
+
+    <script src='/socket.io/socket.io.js'></script>
     <script defer>
 
-      let username = localStorage.getItem('username') || window.prompt("Enter your nickname", "Anonymous") || "Anonymous";
+      let username = localStorage.getItem('username') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
       localStorage.setItem('username', username);
 
       var socket = io({query: `username=${username}`});
@@ -44,41 +47,55 @@
 
       socket.on('message', function(data) {
         var item = document.createElement('li');
-        item.textContent = data.author + ": " + data.content;
+        item.textContent = data.author + ': ' + data.content;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on('connection', function(data) {
         var username = data.username;
-        var text = data.message; //"abc {{username}} def"
+        var text = data.message; //'abc {{username}} def'
 
-        var texts = text.split("{{username}}");
+        var texts = text.split('{{username}}');
         var beforeText = texts[0],
             afterText = texts[1];
 
-        var listItem = document.createElement("li");
+        var listItem = document.createElement('li');
 
-        var before = document.createElement("span");
+        var before = document.createElement('span');
         before.style.color = '#eb5e34';
         before.textContent = beforeText;
 
-        var nickname = document.createElement("span");
+        var nickname = document.createElement('span');
         nickname.style.color = '#111111';
         nickname.textContent = username;
 
-        var after = document.createElement("span"); 
+        var after = document.createElement('span'); 
         after.style.color = '#eb5e34';
         after.textContent = afterText;
 
         listItem.appendChild(before);
         listItem.appendChild(nickname);
         listItem.appendChild(after);
-
-        console.log(beforeText+nickname+afterText)
         
         messages.appendChild(listItem);
         window.scrollTo(0, document.body.scrollHeight);
+      })
+
+      socket.on('leave', function(user) {
+        var username = document.createElement('span');
+        username.textContent = user;
+        username.style.color = '#111111';
+
+        var disconnectText = document.createElement('span');
+        disconnectText.textContent = ' has left.';
+        disconnectText.style.color = '#eb5e34';
+
+        var listItem = document.createElement('li');
+        listItem.appendChild(username);
+        listItem.appendChild(disconnectText)
+
+        messages.appendChild(listItem);
       })
 
       socket.on('online', function(data) {

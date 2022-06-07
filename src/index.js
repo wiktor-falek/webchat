@@ -39,8 +39,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit('connection', generateJoinMessage(username));
 
     socket.on("disconnect", () => {
-        logger.info(`user '${username}' disconnected`);
         ClientHandler.remove(client);
+        logger.info(`user '${username}' disconnected`);
+        socket.broadcast.emit('leave', username);
     });
     socket.on("message", (data) => {
         logger.info(`${data.author}: '${data.content}'`);
