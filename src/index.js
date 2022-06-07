@@ -10,7 +10,7 @@ import path from "path";
 import logger from "./logger.js";
 import Client from './Client.js';
 import ClientHandler from './ClientHandler.js';
-
+import generateJoinMessage from './generateJoinMessage.js';
 
 // express
 const app = express();
@@ -27,15 +27,6 @@ app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}))
 const server = http.createServer(app);
 const io = new Server(server);
 
-const allJoinMessages = [
-    "just arrived",
-    "has joined",
-    "joined the party",
-    "just landed",
-    "showed up",
-    "is here",
-]
-
 io.on("connection", (socket) => {
     const username = socket.request._query['username'];
     logger.info(`user '${username}' connected`);
@@ -45,10 +36,7 @@ io.on("connection", (socket) => {
     
     socket.emit('online', ClientHandler.onlineUsers);
 
-    socket.broadcast.emit('connection', {
-        'username': username,
-        'joinMessage': allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)] || "joined"
-    });
+    socket.broadcast.emit('connection', generateJoinMessage(username));
 
     socket.on("disconnect", () => {
         logger.info(`user '${username}' disconnected`);
