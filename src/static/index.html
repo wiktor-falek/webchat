@@ -33,8 +33,9 @@
     <script src='/socket.io/socket.io.js'></script>
     <script defer>
 
-      var username = localStorage.getItem('username') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
-      localStorage.setItem('username', username);
+      //var username = localStorage.getItem('username') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
+      //localStorage.setItem('username', username);
+      var username = window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
 
       var socket = io({query: 'username='+username});
 
@@ -106,8 +107,8 @@
 
       socket.on('online', function(data) {
         var onlineUsers = [];
-        for(let id of Object.keys(data)) {
-         onlineUsers.push(data[id].name);
+        for (var key of Object.keys(data)) {
+          onlineUsers.push(data[key].name);
         }
         console.log(onlineUsers);
       })

@@ -31,12 +31,13 @@ io.on("connection", (socket) => {
     const username = socket.request._query['username'];
     logger.info(`user '${username}' connected`);
 
-    const client = new Client(username);
-    ClientHandler.add(client);
+    //const client = new Client(username);
+    const client = ClientHandler.add(username);
+    ClientHandler.logClients();
     
-    socket.emit('online', ClientHandler.onlineUsers);
-
     socket.broadcast.emit('connection', generateJoinMessage(username));
+
+    io.emit('online', ClientHandler.onlineUsers);
 
     socket.on("disconnect", () => {
         ClientHandler.remove(client);
