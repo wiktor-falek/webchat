@@ -19,11 +19,7 @@ const generateJoinMessage = (username) => {
     }
     catch(err) {
         logger.error(`failed to generate random join message, ${err.message}`);
-<<<<<<< HEAD
         randomMessage = "# joined."; //default
-=======
-        randomMessage = "# joined"; //default
->>>>>>> ccda0855ca605fbd9e4133be3787af0f11feecbf
     }
     return {"username": username, "message": randomMessage};
 }
