@@ -31,7 +31,6 @@ io.on("connection", (socket) => {
     const username = socket.request._query['username'];
     logger.info(`user '${username}' connected`);
 
-    //const client = new Client(username);
     const client = ClientHandler.add(username);
     ClientHandler.logClients();
     

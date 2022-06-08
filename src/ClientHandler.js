@@ -11,7 +11,7 @@ class ClientHandler {
         const client = new Client(username, this._id)
         this.onlineUsers[client.id] = client;
         this._id += 1;
-        logger.debug(`added client ${client.name}:${client.id}`);
+        logger.debug(`added client ${client.name} [${client.id}]`);
         return client;
     }
     remove(client) {
