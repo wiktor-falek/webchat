@@ -106,6 +106,7 @@
 
       socket.on('online', function(data) {
         var onlineUsers = [];
+        console.log(data);
         for (var key of Object.keys(data)) {
           onlineUsers.push(data[key].name);
         }

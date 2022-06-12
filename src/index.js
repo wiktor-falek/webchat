@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
     
     socket.broadcast.emit('connection', generateJoinMessage(username));
 
-    io.emit('online', ClientHandler.onlineUsers);
+    io.emit('online', ClientHandler.clients);
 
     socket.on("disconnect", () => {
         ClientHandler.remove(client);
