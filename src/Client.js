@@ -1,9 +1,9 @@
-import logger from "./logger";
+import logger from "./logger.js";
 
-class Client {
+class Client {    
     constructor(name, id) {
-        this.name = name;
         this.id = id;
+        this.name = name;
         this.color = "#111111";
     }
     changeColor(hexString) {
@@ -13,6 +13,15 @@ class Client {
         }
         else {
             logger.debug(`failed to change color, invalid hexString:${hexString}`);
+        }
+    }
+    isVerified(name, id) {
+        return (name == this.name && id == this.id);
+    }
+    get publicProperties() {
+        return {
+            name: this.name,
+            color: this.color
         }
     }
 }
