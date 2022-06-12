@@ -2,26 +2,26 @@ import logger from "./logger.js";
 
 
 const allJoinMessages = [
-    "{{username}} just arrived!",
-    "{{username}} has joined!",
-    "{{username}} joined the party!",
-    "{{username}} just landed!",
-    "{{username}} showed up!",
-    "Look, {{username}} is here",
-    "Is it a bird? Is it a plane? No it's {{username}}!",
-    "Welcome {{username}}! Stay awhile and listen."
+    "{{name}} just arrived!",
+    "{{name}} has joined!",
+    "{{name}} joined the party!",
+    "{{name}} just landed!",
+    "{{name}} showed up!",
+    "Look, {{name}} is here",
+    "Is it a bird? Is it a plane? No it's {{name}}!",
+    "Welcome {{name}}! Stay awhile and listen."
 ]
 
-const generateJoinMessage = (username) => {
-    let randomMessage;
+function generateJoinMessage() {
+    let joinMessage;
     try {
-        randomMessage = allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)];
+        joinMessage = allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)];
     }
     catch(err) {
         logger.error(`failed to generate random join message, ${err.message}`);
-        randomMessage = "# joined."; //default
+        joinMessage = "{{name}} joined."; //default
     }
-    return {"username": username, "message": randomMessage};
+    return joinMessage;
 }
 
 export default generateJoinMessage;

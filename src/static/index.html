@@ -16,6 +16,8 @@
     </style>
   </head>
   <body>
+    <label for="color">Color</label>
+    <input type="color" name="color" id="color">
     <div id='app'>
       <div id='chat'>
         <ul id='messages'></ul>
@@ -23,8 +25,8 @@
           <input id='input' autocomplete='off' autofocus /><button>Send</button>
         </form>
       </div> 
-      <div id="online-users">
-        <ul id="users">
+      <div id="online-names">
+        <ul id="names">
         </ul>
       </div>
     </div>
@@ -32,37 +34,63 @@
 
     <script src='/socket.io/socket.io.js'></script>
     <script defer>
-      //var username = localStorage.getItem('username') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
-      //localStorage.setItem('username', username);
-      /* TEMPORARY */ var username = window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
+      //var name = localStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
+      //localStorage.setItem('name', name);
 
-      var socket = io({query: 'username='+username});
-
+      var colorPicker = document.getElementById('color');
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
 
+      var onlineUsers = [];
+      var color = colorPicker.value || "#111111";
+
+      var uuid;
+      var name = window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
+      var socket = io({query: 'name='+name + '&color='+color});
+
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        var message = {content: input.value, author: username};
+        var message = {content: input.value, author: name, color: color };
         if (input.value) {
           socket.emit('message', message);
           input.value = '';
         }
       })
 
+      colorPicker.addEventListener('change', function(e) {
+        console.log(e.target.value);
+      })
+
       socket.on('message', function(data) {
+        console.log(data);
         var item = document.createElement('li');
-        item.textContent = data.author + ': ' + data.content;
+
+        var name = document.createElement('span');
+        name.textContent = data.author;
+        name.style.color = data.color;
+
+        var content = document.createElement('span');
+        content.textContent = data.content;
+
+        var separator = document.createElement('span');
+        separator.textContent = ': ';
+
+        item.appendChild(name);
+        item.appendChild(separator);
+        item.appendChild(content);
+
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on('connection', function(data) {
-        var username = data.username;
-        var text = data.message; //'abc {{username}} def'
+        console.log(data);
+        console.log(data.color)
+        var name = data.name;
+        var text = data.joinMessage; //'abc {{name}} def'
 
-        var texts = text.split('{{username}}');
+        var texts = text.split('{{name}}');
         var beforeText = texts[0],
             afterText = texts[1];
 
@@ -73,8 +101,8 @@
         before.textContent = beforeText;
 
         var nickname = document.createElement('span');
-        nickname.style.color = '#111111';
-        nickname.textContent = username;
+        nickname.style.color = data.color || '#111111'; // default nickname color
+        nickname.textContent = name;
 
         var after = document.createElement('span'); 
         after.style.color = '#eb5e34';
@@ -88,29 +116,29 @@
         window.scrollTo(0, document.body.scrollHeight);
       })
 
-      socket.on('leave', function(user) {
-        var username = document.createElement('span');
-        username.textContent = user;
-        username.style.color = '#111111';
+      socket.on('leave', function(data) {
+        var name = document.createElement('span');
+        name.textContent = data.name;
+        //name.style.color = data.color;
 
         var disconnectText = document.createElement('span');
         disconnectText.textContent = ' has left.';
         disconnectText.style.color = '#eb5e34';
 
         var listItem = document.createElement('li');
-        listItem.appendChild(username);
+        listItem.appendChild(name);
         listItem.appendChild(disconnectText)
 
         messages.appendChild(listItem);
       })
 
       socket.on('online', function(data) {
-        var onlineUsers = [];
-        console.log(data);
-        for (var key of Object.keys(data)) {
-          onlineUsers.push(data[key].name);
-        }
+        onlineUsers = Object.values(data);
         console.log(onlineUsers);
+        //var onlinenames = [];
+        //for (var key of Object.keys(data)) {
+        //  onlinenames.push(data[key].name);
+        //}
       })
     </script>
   </body>

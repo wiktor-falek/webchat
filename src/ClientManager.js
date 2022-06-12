@@ -3,18 +3,18 @@ import { v4 as uuidv4 } from 'uuid';
 import logger from "./logger.js";
 import Client from "./Client.js";
 
-class ClientHandler {
+class ClientManager {
     #clients = {};
 
-    add(username) {
+    addClient(name, color="#111111") {
         // instantiates and returns a new client with unique id
         const id = uuidv4();
-        const client = new Client(username, id)
+        const client = new Client(id, name, color)
         this.#clients[id] = client;
         logger.debug(`added client ${client.name} [${client.id}]`);
         return client;
     }
-    remove(client) {
+    removeClient(client) {
         delete this.#clients[client.id];
         logger.debug(`removed client ${client.name}:${client.id}`);
     }
@@ -32,4 +32,4 @@ class ClientHandler {
     }
 }
 
-export default new ClientHandler();
+export default new ClientManager();
