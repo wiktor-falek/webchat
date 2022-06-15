@@ -43,7 +43,7 @@
       var input = document.getElementById('input');
 
       var onlineUsers = [];
-      var color = colorPicker.value || "#111111";
+      var color = colorPicker.value || "#000000";
 
       var uuid;
       var name = window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
@@ -51,7 +51,10 @@
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        var message = {content: input.value, author: name, color: color };
+        var message = {
+          content: input.value,
+          uuid: uuid
+        };
         if (input.value) {
           socket.emit('message', message);
           input.value = '';
@@ -59,15 +62,21 @@
       })
 
       colorPicker.addEventListener('change', function(e) {
-        console.log(e.target.value);
+        var color = e.target.value;
+        console.log('sending color: '+ color)
+        socket.emit('colorChange', {
+          color: color,
+          uuid: uuid
+        });
+        console.log('changed color to '+color)
       })
 
       socket.on('message', function(data) {
-        console.log(data);
+        console.log('MESSAGE DATA'); console.log(data)
         var item = document.createElement('li');
 
         var name = document.createElement('span');
-        name.textContent = data.author;
+        name.textContent = data.name;
         name.style.color = data.color;
 
         var content = document.createElement('span');
@@ -84,9 +93,13 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
+      socket.on('uuid', function(data) {
+        uuid = data.uuid;
+        console.log(uuid);
+      })
+
       socket.on('connection', function(data) {
         console.log(data);
-        console.log(data.color)
         var name = data.name;
         var text = data.joinMessage; //'abc {{name}} def'
 
@@ -101,7 +114,7 @@
         before.textContent = beforeText;
 
         var nickname = document.createElement('span');
-        nickname.style.color = data.color || '#111111'; // default nickname color
+        nickname.style.color = data.color; // default nickname color
         nickname.textContent = name;
 
         var after = document.createElement('span'); 

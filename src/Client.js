@@ -1,24 +1,25 @@
 import logger from "./logger.js";
 
 class Client {    
-    constructor(id, name, color="#111111") {
-        this.id = id;
+    constructor(uuid, name, color) {
+        this.uuid = uuid;
         this.name = name;
-        this.color = "#111111";
-        this.changeColor(color);
+        this.color = undefined;
+        logger.debug(`Client(${this.name}, ${this.uuid}) added`);
+        this.setColor(color);
     }
-    changeColor(hexString) {
+    setColor(hexString) {
         const regex = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/;
         if (regex.test(hexString)) {
             this.color = hexString;
-            logger.debug(`Client(${this.name}, ${this.id}) changed color to ${hexString}`);        
+            logger.debug(`Client(${this.name}, ${this.uuid}) set color to ${hexString}`);        
         }
         else {
             logger.debug(`failed to change color, invalid hexString:${hexString}`);
         }
     }
-    isVerified(name, id) {
-        return (name == this.name && id == this.id);
+    isVerified(name, uuid) {
+        return (name == this.name && uuid == this.uuid);
     }
     get publicProperties() {
         return {

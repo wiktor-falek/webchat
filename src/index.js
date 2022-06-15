@@ -9,7 +9,7 @@ import path from "path";
 
 import logger from "./logger.js";
 import Client from './Client.js';
-import ClientManager from './ClientManager.js';
+import ClientStorage from './ClientStorage.js';
 import generateJoinMessage from './generateJoinMessage.js';
 
 // express
@@ -31,11 +31,12 @@ io.on("connection", (socket) => {
     const query = socket.request._query;
     const name = query['name'];
     const color = query['color'];
-    console.log(color)
-    logger.info(`user '${name}' connected`);
+    const client = ClientStorage.addClient(name, color);
+    logger.debug(`Client(${client.name}, ${client.uuid}) connected`);
 
-    const client = ClientManager.addClient(name, color);
-    ClientManager.logClients();
+    ClientStorage.logClients();
+
+    socket.emit('uuid', { uuid: client.uuid }); // send generated uuid to client
 
     socket.broadcast.emit('connection', {
         name: client.name,
@@ -43,19 +44,37 @@ io.on("connection", (socket) => {
         joinMessage: generateJoinMessage()
     });
 
-    io.emit('online', ClientManager.clients);
+    io.emit('online',
+        ClientStorage.allClients
+        .map(client => {
+            return client.name
+        })
+    );
 
     socket.on("disconnect", () => {
-        ClientManager.removeClient(client);
+        ClientStorage.removeClient(client);
         logger.info(`user '${name}' disconnected`);
         socket.broadcast.emit('leave', { name: name });
     });
+
     socket.on("message", (data) => {
-        logger.info(`${data.author}: '${data.content}'`);
-        io.emit('message', data);
+        const uuid = data.uuid;
+        const client = ClientStorage.getClient(uuid);
+        io.emit('message', {
+            content: data.content,
+            name: client.name,
+            color: client.color
+        });
+        logger.info(`Client(${client.name}, ${client.uuid}) said: '${data.content}'`)
     })
+
     socket.on("colorChange", (data) => {
-        logger.debug(`data for colorChange: ${data}`)
+        console.log(data);
+        const uuid = data.uuid;
+        const color = data.color;
+        const client = ClientStorage.getClient(uuid);
+        client.setColor(color);
+        console.log(client.color);
     })
 });
 
