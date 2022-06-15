@@ -145,13 +145,8 @@
         messages.appendChild(listItem);
       })
 
-      socket.on('online', function(data) {
-        onlineUsers = Object.values(data);
-        console.log(onlineUsers);
-        //var onlinenames = [];
-        //for (var key of Object.keys(data)) {
-        //  onlinenames.push(data[key].name);
-        //}
+      socket.on('online', function(onlineClients) {
+        console.log(onlineClients);
       })
     </script>
   </body>

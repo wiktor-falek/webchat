@@ -16,7 +16,7 @@ class ClientStorage {
 
     removeClient(client) {
         delete this.#clients[client.uuid];
-        logger.debug(`client(${this.name}, ${this.uuid}) removed`);
+        logger.debug(`client(${client.name}, ${client.uuid}) removed`);
     }
 
     getClient(uuid) {

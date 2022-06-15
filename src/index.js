@@ -32,9 +32,7 @@ io.on("connection", (socket) => {
     const name = query['name'];
     const color = query['color'];
     const client = ClientStorage.addClient(name, color);
-    logger.debug(`Client(${client.name}, ${client.uuid}) connected`);
-
-    ClientStorage.logClients();
+    logger.info(`Client(${client.name}, ${client.uuid}) connected`);
 
     socket.emit('uuid', { uuid: client.uuid }); // send generated uuid to client
 
@@ -47,13 +45,16 @@ io.on("connection", (socket) => {
     io.emit('online',
         ClientStorage.allClients
         .map(client => {
-            return client.name
+            return {
+                name: client.name,
+                color: client.color
+            }
         })
     );
 
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
-        logger.info(`user '${name}' disconnected`);
+        logger.info(`Client(${client.name}, ${client.uuid}) disconnected`);
         socket.broadcast.emit('leave', { name: name });
     });
 
