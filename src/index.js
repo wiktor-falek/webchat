@@ -11,6 +11,8 @@ import logger from "./logger.js";
 import Client from './Client.js';
 import ClientStorage from './ClientStorage.js';
 import generateJoinMessage from './generateJoinMessage.js';
+import uuidIsValid from './utils/uuidIsValid.js';
+import messageIsValid from './utils/messageIsValid.js';
 
 // express
 const app = express();
@@ -31,10 +33,16 @@ io.on("connection", (socket) => {
     const query = socket.request._query;
     const name = query['name'];
     const color = query['color'];
-    const client = ClientStorage.addClient(name, color);
-    logger.info(`Client(${client.name}, ${client.uuid}) connected`);
+    let clientId = query['id'];
+    if (clientId != 'null' || clientId != 'undefined') { // could uuid validate
+        logger.debug(`received id ${clientId}`);
+    }
 
-    socket.emit('uuid', { uuid: client.uuid }); // send generated uuid to client
+    const client = ClientStorage.addClient(name, color, clientId);
+    logger.info(`Client(${client.name}, ${client.id}) connected`);
+
+    socket.emit('id', { id: client.id }); // send generated id to client
+    logger.debug(`emitted id ${client.id}`);
 
     socket.broadcast.emit('connection', {
         name: client.name,
@@ -54,26 +62,56 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
-        logger.info(`Client(${client.name}, ${client.uuid}) disconnected`);
+        logger.info(`Client(${client.name}, ${client.id}) disconnected`);
         socket.broadcast.emit('leave', { name: name });
     });
 
     socket.on("message", (data) => {
-        const uuid = data.uuid;
-        const client = ClientStorage.getClient(uuid);
-        io.emit('message', {
-            content: data.content,
-            name: client.name,
-            color: client.color
-        });
-        logger.info(`Client(${client.name}, ${client.uuid}) said: '${data.content}'`)
+        const message = data.content;
+        const id = data.id; 
+
+        if (!messageIsValid(message)) {
+            return socket.emit('message', {
+                content: "Illegal message, you're going to jail",
+                name: "[SERVER]",
+                color: "#C41E3A"
+            })
+        }
+
+        if (!uuidIsValid(id)) {
+            logger.warn(`Invalid id provided '${id}'`);
+            return;
+        }
+        
+        if (message.startsWith('/')) {
+            const command = message.slice(1);
+            let content;
+            return socket.emit('message', {
+                content: content || `Invalid command '${message}'`,
+                name: "[SERVER]",
+                color: "#C41E3A"
+            });
+        }
+        
+        try {
+            const client = ClientStorage.getClient(id);
+            io.emit('message', {
+                content: data.content,
+                name: client.name,
+                color: client.color
+            });
+            logger.info(`Client(${client.name}, ${client.id}) said: '${data.content}'`)
+        }
+        catch {
+            logger.debug(`Could not get client with id ${id}`)
+        }
     })
 
     socket.on("colorChange", (data) => {
         console.log(data);
-        const uuid = data.uuid;
+        const id = data.id;
         const color = data.color;
-        const client = ClientStorage.getClient(uuid);
+        const client = ClientStorage.getClient(id);
         client.setColor(color);
         console.log(client.color);
     })

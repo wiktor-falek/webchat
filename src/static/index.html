@@ -34,26 +34,27 @@
 
     <script src='/socket.io/socket.io.js'></script>
     <script defer>
-      //var name = localStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
-      //localStorage.setItem('name', name);
+      var name = sessionStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
+      sessionStorage.setItem('name', name)
 
       var colorPicker = document.getElementById('color');
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
 
-      var onlineUsers = [];
       var color = colorPicker.value || "#000000";
 
-      var uuid;
-      var name = window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
-      var socket = io({query: 'name='+name + '&color='+color});
+      var id = sessionStorage.getItem('id');
+      
+      
+
+      var socket = io({query: 'name='+name + '&color='+color + '&id='+id});
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         var message = {
           content: input.value,
-          uuid: uuid
+          id: id
         };
         if (input.value) {
           socket.emit('message', message);
@@ -66,7 +67,7 @@
         console.log('sending color: '+ color)
         socket.emit('colorChange', {
           color: color,
-          uuid: uuid
+          id: id
         });
         console.log('changed color to '+color)
       })
@@ -93,9 +94,9 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      socket.on('uuid', function(data) {
-        uuid = data.uuid;
-        console.log(uuid);
+      socket.on('id', function(data) {
+        id = data.id;
+        sessionStorage.setItem('id', data.id);
       })
 
       socket.on('connection', function(data) {
