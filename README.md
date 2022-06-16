@@ -1,1 +1,1 @@
-<h4>Chat application with cool features (Soon™) made with socket.io</h4>
+<p>Chat application with cool features (<i>Soon</i>™) made with socket.io</p>
