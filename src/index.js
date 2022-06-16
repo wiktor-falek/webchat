@@ -109,6 +109,27 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on("privateMessage", (data) => {
+        const message = data.content;
+        if (!messageIsValid(message)) {
+            return;
+        }
+
+        socket.to(data.socketId).emit('message', {
+            content: `${message}`, // temporary solution
+            name: `@From ${data.author}`, // template literal Sender
+            color: `#66B2FF`,
+            timestamp: Date.now()
+        });
+        socket.emit('message', {
+            content: `${message}`,
+            name: `@To ${ClientStorage.getClientBySocketId(data.socketId).name}`,
+            color: "#66B2FF",
+            timestamp: Date.now()
+        });
+        return;
+    })
+
     socket.on("colorChange", (data) => {
         const id = data.id;
         const color = data.color;
