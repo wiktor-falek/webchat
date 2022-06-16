@@ -1,15 +1,18 @@
 import logger from "./logger.js";
 
 class Client {    
-    constructor(name, id) {
+    constructor(id, name, color) {
         this.id = id;
         this.name = name;
-        this.color = "#111111";
+        this.color = undefined;
+        logger.debug(`Client(${this.name}, ${this.id}) added`);
+        this.setColor(color);
     }
-    changeColor(hexString) {
-        if (hexString.test("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")) {
+    setColor(hexString) {
+        const regex = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/;
+        if (regex.test(hexString)) {
             this.color = hexString;
-            logger.debug(`Client(${this.name}, ${this.id}) changed color to ${hexString}`);        
+            logger.debug(`Client(${this.name}, ${this.id}) set color to ${hexString}`);        
         }
         else {
             logger.debug(`failed to change color, invalid hexString:${hexString}`);
