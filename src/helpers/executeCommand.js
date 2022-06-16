@@ -10,27 +10,11 @@ export default function executeCommand(socket, message) {
             case "help":
             case "h":
                 socket.emit('message', {
-                    content: `You used /h command`,
+                    content: `{{Help panel}}`,
                     name: "[SERVER]",
                     color: "#C41E3A",
                     timestamp: Date.now()
                 })
-                return;
-            case "w": 
-                let content = args.join(" ");
-                console.log(content)
-                socket.to().emit('message', {
-                    content: `${content}`, // temporary solution
-                    name: `@From Sender`, // template literal Sender
-                    color: "#66B2FF",
-                    timestamp: Date.now()
-                });
-                socket.emit('message', {
-                    content: `${message}`,
-                    name: `@To ${args[0]}`,
-                    color: "#66B2FF",
-                    timestamp: Date.now()
-                });
                 return;
             default:
                 socket.emit('message', {
