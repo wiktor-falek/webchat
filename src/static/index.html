@@ -59,7 +59,7 @@
           id: id
         };
         if (input.value) {
-          if (input.value == "/clear") {
+          if (input.value === "/clear" || input.value === "/cls") {
             messages.innerHTML = ''; // remove all children
             input.value = '';
             return;

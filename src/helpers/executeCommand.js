@@ -27,7 +27,7 @@ export default function executeCommand(socket, message) {
             case "help":
             case "h":
                 socket.emit('message', {
-                    content: "AVAILABLE COMMANDS\n/help - displays this message \n/ping\n/clear - clears screen",
+                    content: "\nAVAILABLE COMMANDS\n/help - displays this message\n/ping - ping the server\n/clear - clears screen",
                     name: "[SERVER]",
                     color: "#C41E3A",
                     timestamp: Date.now()
@@ -41,7 +41,13 @@ export default function executeCommand(socket, message) {
                     timestamp: Date.now()
                 })
                 return;
-
+                socket.emit('message', {
+                    content: "",
+                    name: "[SERVER]",
+                    color: "#C41E3A",
+                    timestamp: Date.now()
+                })
+                return;
             // insert boilerplate above
             default:
                 socket.emit('message', {
