@@ -1,8 +1,6 @@
-import dotenv from "dotenv"; dotenv.config();
-
 export default function messageIsValid(message) {
     if (
-        message.length > dotenv.MESSAGE_MAXLEN 
+        message.length > 256
         ) {
         return false;
     }
