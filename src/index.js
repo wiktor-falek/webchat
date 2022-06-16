@@ -47,7 +47,8 @@ io.on("connection", (socket) => {
     socket.broadcast.emit('connection', {
         name: client.name,
         color: client.color,
-        joinMessage: generateJoinMessage()
+        joinMessage: generateJoinMessage(),
+        timestamp: Date.now()
     });
 
     io.emit('online',
@@ -55,7 +56,8 @@ io.on("connection", (socket) => {
         .map(client => {
             return {
                 name: client.name,
-                color: client.color
+                color: client.color,
+                timestamp: Date.now()
             }
         })
     );
@@ -63,7 +65,11 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
         logger.info(`Client(${client.name}, ${client.id}) disconnected`);
-        socket.broadcast.emit('leave', { name: name, color: client.color});
+        socket.broadcast.emit('leave', {
+            name: name,
+            color: client.color,
+            timestamp: Date.now()
+        });
     });
 
     socket.on("message", (data) => {
@@ -74,7 +80,8 @@ io.on("connection", (socket) => {
             return socket.emit('message', {
                 content: "Illegal message, you're going to jail",
                 name: "[SERVER]",
-                color: "#C41E3A"
+                color: "#C41E3A",
+                timestamp: Date.now()
             })
         }
 
@@ -92,7 +99,8 @@ io.on("connection", (socket) => {
             io.emit('message', {
                 content: data.content,
                 name: client.name,
-                color: client.color
+                color: client.color,
+                timestamp: Date.now()
             });
             logger.info(`Client(${client.name}, ${client.id}) said: '${data.content}'`)
         }
