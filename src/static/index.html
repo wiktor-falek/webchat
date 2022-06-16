@@ -34,20 +34,20 @@
 
     <script src='/socket.io/socket.io.js'></script>
     <script defer>
-      var name = sessionStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
-      sessionStorage.setItem('name', name)
 
       var colorPicker = document.getElementById('color');
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
 
-      var color = colorPicker.value || "#000000";
-
-      var id = sessionStorage.getItem('id');
+      var name = window.sessionStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
+      window.sessionStorage.setItem('name', name)
+      var color = window.sessionStorage.getItem('color') || colorPicker.value || "#000000";
+      console.log(sessionStorage.getItem('color'))
+      window.localStorage.setItem('color', color);
+      var id = window.sessionStorage.getItem('id');
       
-      
-
+      console.log('name='+name + '&color='+color + '&id='+id)
       var socket = io({query: 'name='+name + '&color='+color + '&id='+id});
 
       form.addEventListener('submit', function(e) {
@@ -63,13 +63,14 @@
       })
 
       colorPicker.addEventListener('change', function(e) {
-        var color = e.target.value;
+        color = e.target.value;
         console.log('sending color: '+ color)
         socket.emit('colorChange', {
           color: color,
           id: id
         });
-        console.log('changed color to '+color)
+        console.log('changed color to '+color);
+        window.sessionStorage.setItem('color', color);
       })
 
       socket.on('message', function(data) {
@@ -96,7 +97,7 @@
 
       socket.on('id', function(data) {
         id = data.id;
-        sessionStorage.setItem('id', data.id);
+        window.sessionStorage.setItem('id', data.id);
       })
 
       socket.on('connection', function(data) {
