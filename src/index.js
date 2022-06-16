@@ -121,9 +121,11 @@ io.on("connection", (socket) => {
             color: `#66B2FF`,
             timestamp: Date.now()
         });
+
+        const recipientName = ClientStorage.getClientBySocketId(data.socketId).name;
         socket.emit('message', {
             content: `${message}`,
-            name: `@To ${ClientStorage.getClientBySocketId(data.socketId).name}`,
+            name: `@To ${recipientName}`,
             color: "#66B2FF",
             timestamp: Date.now()
         });

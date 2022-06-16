@@ -72,12 +72,15 @@
       socket.on('message', function(data) {
         var item = document.createElement('li');
 
-        var time = new Date(data.timestamp).toLocaleTimeString();
-        console.log(time);
+        var timeString = new Date(data.timestamp).toLocaleTimeString(); 
 
         var name = document.createElement('span');
         name.textContent = data.name;
         name.style.color = data.color;
+
+        var time = document.createElement('span');
+        time.textContent = timeString;
+        time.style.color = "#A9A9A9";
 
         var content = document.createElement('span');
         content.textContent = data.content;
@@ -86,6 +89,7 @@
         separator.textContent = ': ';
 
         item.appendChild(name);
+        item.appendChild(time);
         item.appendChild(separator);
         item.appendChild(content);
 
