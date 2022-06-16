@@ -1,5 +1,6 @@
 import logger from "../logger.js";
 
+
 export default function executeCommand(socket, message) {
     const params = message.trim().slice(1).split(" ");
     const command = params[0];
@@ -10,7 +11,7 @@ export default function executeCommand(socket, message) {
             case "help":
             case "h":
                 socket.emit('message', {
-                    content: `{{Help panel}}`,
+                    content: "\n/help - displays this message \n/test - test",
                     name: "[SERVER]",
                     color: "#C41E3A",
                     timestamp: Date.now()
