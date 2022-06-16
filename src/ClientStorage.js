@@ -11,10 +11,10 @@ class ClientStorage {
         // instantiates and returns a new client with unique id
         let id = uuidv4();
         if (uuidIsValid(clientId)) {
-            logger.debug(`Client(${name, clientId}) provided his id`)
+            logger.debug(`Client(${name, clientId}) provided his id`);
             id = clientId; // if validated set id to uuid provided by client
         }
-        const client = new Client(id, name, color)
+        const client = new Client(id, name, color);
         this.#clients[id] = client;
         return client;
     }
@@ -36,7 +36,7 @@ class ClientStorage {
         return Object.values(this.#clients);
     }
 
-    get allClients() {
+    get allClientsPublicProperties() {
         // returns an array of publicProperties object of each client
         return this.#all.map((client) => {
             return client.publicProperties;

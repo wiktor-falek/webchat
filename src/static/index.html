@@ -43,11 +43,9 @@
       var name = window.sessionStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
       window.sessionStorage.setItem('name', name)
       var color = window.sessionStorage.getItem('color') || colorPicker.value || "#000000";
-      console.log(sessionStorage.getItem('color'))
       window.localStorage.setItem('color', color);
       var id = window.sessionStorage.getItem('id');
       
-      console.log('name='+name + '&color='+color + '&id='+id)
       var socket = io({query: 'name='+name + '&color='+color + '&id='+id});
 
       form.addEventListener('submit', function(e) {
@@ -64,17 +62,14 @@
 
       colorPicker.addEventListener('change', function(e) {
         color = e.target.value;
-        console.log('sending color: '+ color)
         socket.emit('colorChange', {
           color: color,
           id: id
         });
-        console.log('changed color to '+color);
         window.sessionStorage.setItem('color', color);
       })
 
       socket.on('message', function(data) {
-        console.log('MESSAGE DATA'); console.log(data)
         var item = document.createElement('li');
 
         var name = document.createElement('span');
@@ -101,7 +96,6 @@
       })
 
       socket.on('connection', function(data) {
-        console.log(data);
         var name = data.name;
         var text = data.joinMessage; //'abc {{name}} def'
 

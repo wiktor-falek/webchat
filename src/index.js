@@ -10,7 +10,7 @@ import path from "path";
 import logger from "./logger.js";
 import Client from './Client.js';
 import ClientStorage from './ClientStorage.js';
-import generateJoinMessage from './generateJoinMessage.js';
+import generateJoinMessage from './utils/generateJoinMessage.js';
 import uuidIsValid from './utils/uuidIsValid.js';
 import messageIsValid from './utils/messageIsValid.js';
 import executeCommand from './helpers/executeCommand.js';
@@ -22,10 +22,6 @@ app.use(cors({
     origin: "*"
 }));
 
-// express config
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
 app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}));
 
 // socket.io
@@ -36,8 +32,9 @@ io.on("connection", (socket) => {
     const query = socket.request._query;
     const name = query['name'];
     const color = query['color'];
-    let clientId = query['id'];
-    if (clientId != 'null' || clientId != 'undefined') { // could uuid validate
+    const clientId = query['id'];
+
+    if (clientId != 'null' || clientId != 'undefined' || !clientId) { // could uuid validate
         logger.debug(`received id ${clientId}`);
     }
 
@@ -54,7 +51,7 @@ io.on("connection", (socket) => {
     });
 
     io.emit('online',
-        ClientStorage.allClients
+        ClientStorage.allClientsPublicProperties
         .map(client => {
             return {
                 name: client.name,
@@ -105,12 +102,10 @@ io.on("connection", (socket) => {
     })
 
     socket.on("colorChange", (data) => {
-        console.log(data);
         const id = data.id;
         const color = data.color;
         const client = ClientStorage.getClient(id);
         client.setColor(color);
-        console.log(client.color);
     })
 });
 
