@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import uuidIsValid from './utils/uuidIsValid.js';
 
+import uuidIsValid from './utils/uuidIsValid.js';
 import logger from "./logger.js";
 import Client from "./Client.js";
 
@@ -17,11 +17,12 @@ class ClientStorage {
         const client = new Client(id, name, color);
         this.#clients[id] = client;
         return client;
+        logger.debug(`Client(${client.name}, ${client.id}) added to ClientStorage`);
     }
 
     removeClient(client) {
         delete this.#clients[client.id];
-        logger.debug(`Client(${client.name}, ${client.id}) removed`);
+        logger.debug(`Client(${client.name}, ${client.id}) removed from ClientStorage`);
     }
 
     getClient(id) {
