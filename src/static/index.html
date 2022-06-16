@@ -133,7 +133,7 @@
       socket.on('leave', function(data) {
         var name = document.createElement('span');
         name.textContent = data.name;
-        //name.style.color = data.color;
+        name.style.color = data.color;
 
         var disconnectText = document.createElement('span');
         disconnectText.textContent = ' has left.';

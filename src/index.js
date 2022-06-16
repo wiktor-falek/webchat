@@ -1,5 +1,5 @@
-import * as url from 'url';
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+import { fileURLToPath } from 'url';
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 import express, { json, urlencoded } from "express";
 import http from "http";
 import { Server } from 'socket.io';
@@ -13,11 +13,14 @@ import ClientStorage from './ClientStorage.js';
 import generateJoinMessage from './generateJoinMessage.js';
 import uuidIsValid from './utils/uuidIsValid.js';
 import messageIsValid from './utils/messageIsValid.js';
+import executeCommand from './helpers/executeCommand.js';
 
 // express
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "*"
+}));
 
 // express config
 app.use(express.json());
@@ -63,7 +66,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
         logger.info(`Client(${client.name}, ${client.id}) disconnected`);
-        socket.broadcast.emit('leave', { name: name });
+        socket.broadcast.emit('leave', { name: name, color: client.color});
     });
 
     socket.on("message", (data) => {
@@ -84,13 +87,7 @@ io.on("connection", (socket) => {
         }
         
         if (message.startsWith('/')) {
-            const command = message.slice(1);
-            let content;
-            return socket.emit('message', {
-                content: content || `Invalid command '${message}'`,
-                name: "[SERVER]",
-                color: "#C41E3A"
-            });
+            return executeCommand(socket, message);
         }
         
         try {
