@@ -7,7 +7,7 @@ import Client from "./Client.js";
 class ClientStorage {
     #clients = {};
 
-    addClient(name, color, clientId=undefined) {
+    addClient(name, socketId, color, clientId=undefined) {
         // instantiates and returns a new client with unique id
         let id;
         if (uuidIsValid(clientId)) {
@@ -17,7 +17,7 @@ class ClientStorage {
         else {
             id = uuidv4();
         }
-        const client = new Client(id, name, color);
+        const client = new Client(id, socketId, name, color);
         this.#clients[id] = client;
         return client;
         logger.debug(`Client(${client.name}, ${client.id}) added to ClientStorage`);
@@ -28,8 +28,17 @@ class ClientStorage {
         logger.debug(`Client(${client.name}, ${client.id}) removed from ClientStorage`);
     }
 
-    getClient(id) {
+    getClientById(id) {
         return this.#clients[id];
+    }
+
+    getClientBySocketId(socketId) {
+        for (let client of this.#all) {
+            if (client.socketId === socketId) {
+                return client;
+            }
+        }
+        return null;
     }
 
     logClients() {

@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
         logger.debug(`received id ${clientId}`);
     }
 
-    const client = ClientStorage.addClient(name, color, clientId);
+    const client = ClientStorage.addClient(name, socket.id, color, clientId);
     logger.info(`Client(${client.name}, ${client.id}) connected`);
 
     socket.emit('id', { id: client.id }); // send generated id to client
@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
         }
         
         try {
-            const client = ClientStorage.getClient(id);
+            const client = ClientStorage.getClientById(id);
             io.emit('message', {
                 content: data.content,
                 name: client.name,
@@ -112,7 +112,7 @@ io.on("connection", (socket) => {
     socket.on("colorChange", (data) => {
         const id = data.id;
         const color = data.color;
-        const client = ClientStorage.getClient(id);
+        const client = ClientStorage.getClientById(id);
         client.setColor(color);
     })
 });
