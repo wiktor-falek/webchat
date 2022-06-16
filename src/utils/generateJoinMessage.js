@@ -2,14 +2,13 @@ import logger from "../logger.js";
 
 
 const allJoinMessages = [
-    "{{name}} just arrived!",
     "{{name}} has joined!",
+    "{{name}} just arrived!",
     "{{name}} joined the party!",
     "{{name}} just landed!",
     "{{name}} showed up!",
-    "Look, {{name}} is here",
+    "Look, {{name}} is here!",
     "Is it a bird? Is it a plane? No it's {{name}}!",
-    "Welcome {{name}}! Stay awhile and listen."
 ]
 
 function generateJoinMessage() {
@@ -18,8 +17,8 @@ function generateJoinMessage() {
         joinMessage = allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)];
     }
     catch(err) {
-        logger.error(`failed to generate random join message, ${err.message}`);
-        joinMessage = "{{name}} joined."; //default
+        logger.warn(`failed to generate random join message, ${err.message}`);
+        joinMessage = "{{name}} has joined!"; //default
     }
     return joinMessage;
 }

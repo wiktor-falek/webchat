@@ -72,6 +72,9 @@
       socket.on('message', function(data) {
         var item = document.createElement('li');
 
+        var time = new Date(data.timestamp).toLocaleTimeString();
+        console.log(time);
+
         var name = document.createElement('span');
         name.textContent = data.name;
         name.style.color = data.color;
