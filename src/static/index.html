@@ -59,6 +59,11 @@
           id: id
         };
         if (input.value) {
+          if (input.value == "/clear") {
+            messages.innerHTML = ''; // remove all children
+            input.value = '';
+            return;
+          }
           socket.emit('message', message);
           input.value = '';
         }

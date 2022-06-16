@@ -1,6 +1,22 @@
 import logger from "../logger.js";
 
 
+/*
+RESPONSE BOILERPLATE
+
+case "":
+    socket.emit('message', {
+        content: "",
+        name: "[SERVER]",
+        color: "#C41E3A",
+        timestamp: Date.now()
+    })
+    return;
+
+
+
+*/
+
 export default function executeCommand(socket, message) {
     const params = message.trim().slice(1).split(" ");
     const command = params[0];
@@ -11,12 +27,22 @@ export default function executeCommand(socket, message) {
             case "help":
             case "h":
                 socket.emit('message', {
-                    content: "\n/help - displays this message \n/test - test",
+                    content: "AVAILABLE COMMANDS\n/help - displays this message \n/ping\n/clear - clears screen",
                     name: "[SERVER]",
                     color: "#C41E3A",
                     timestamp: Date.now()
                 })
                 return;
+            case "ping":
+                socket.emit('message', {
+                    content: "pong",
+                    name: "[SERVER]",
+                    color: "#C41E3A",
+                    timestamp: Date.now()
+                })
+                return;
+
+            // insert boilerplate above
             default:
                 socket.emit('message', {
                     content: `Invalid command '${message}'`,
