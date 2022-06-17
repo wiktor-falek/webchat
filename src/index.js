@@ -101,7 +101,14 @@ io.on("connection", (socket) => {
                 timestamp: Date.now()
             })
         }
-
+        
+        socket.emit('message', {
+            content: `${message}`,
+            name: `@To ${target.name}`,
+            color: "#66B2FF",
+            timestamp: Date.now()
+        });
+        
         socket.to(data.targetId).emit('message', 
         {
             content: `${message}`,
@@ -110,14 +117,14 @@ io.on("connection", (socket) => {
             timestamp: Date.now()
         }); 
 
-        
-        socket.emit('message', {
-            content: `${message}`,
-            name: `@To ${target.name}`,
-            color: "#66B2FF",
-            timestamp: Date.now()
-        });
-        return;
+        if (data.targetId == socket.id) {
+            socket.emit('message', {
+                content: `${message}`,
+                name: `@From ${client.name}`,
+                color: `#66B2FF`,
+                timestamp: Date.now()
+            })
+        }
     })
 
     socket.on("colorChange", (data) => {

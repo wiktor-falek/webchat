@@ -67,7 +67,7 @@
           if (input.value.startsWith('@')) {
             var spaceIndex = input.value.indexOf(" ");
             var targetId = input.value.slice(1, spaceIndex);
-            var message = input.value.slice(spaceIndex);
+            var message = input.value.slice(spaceIndex+1);
             console.log(targetId)
             console.log(message)
             socket.emit('privateMessage', {content: message, targetId: targetId})
