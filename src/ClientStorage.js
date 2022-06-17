@@ -4,6 +4,7 @@ import validateUUID from './utils/validateUUID.js';
 import logger from "./logger.js";
 import Client from "./Client.js";
 
+
 class ClientStorage {
     #clients = {};
 
@@ -13,12 +14,12 @@ class ClientStorage {
         const client = new Client(id, socketId, name, color);
         this.#clients[id] = client;
         return client;
-        logger.debug(`Client(${client.name}, ${client.id}) added to ClientStorage`);
+        logger.debug(`added to ClientStorage Client(${client.name}, ${client.id})`);
     }
 
     removeClient(client) {
         delete this.#clients[client.id];
-        logger.debug(`Client(${client.name}, ${client.id}) removed from ClientStorage`);
+        logger.debug(`removed from ClientStorage Client(${client.name}, ${client.id})`);
     }
 
     getClientById(id) {

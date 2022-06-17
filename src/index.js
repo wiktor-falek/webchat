@@ -8,12 +8,12 @@ import cors from "cors";
 import path from "path";
 
 import logger from "./logger.js";
-import Client from './Client.js';
 import ClientStorage from './ClientStorage.js';
 import generateJoinMessage from './utils/generateJoinMessage.js';
 import validateUUID from './utils/validateUUID.js';
 import messageIsValid from './utils/messageIsValid.js';
 import executeCommand from './helpers/executeCommand.js';
+
 
 // express
 const app = express();
@@ -32,14 +32,10 @@ io.on("connection", (socket) => {
     const query = socket.request._query;
     const name = query['name'];
     const color = query['color'];
-    const clientId = query['id'];
-
-    if (clientId != 'null' || clientId != 'undefined' || !clientId) { // could uuid validate
-        logger.debug(`received id ${clientId}`);
-    }
+    const clientId = validateUUID(query['id']);
 
     const client = ClientStorage.addClient(name, socket.id, color, clientId);
-    logger.info(`Client(${client.name}, ${client.id}) connected`);
+    logger.info(`connected Client(${client.name}, ${client.id})`);
 
     socket.emit('id', { id: client.id }); // send generated id to client
     logger.debug(`emitted id ${client.id}`);
@@ -64,7 +60,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
-        logger.info(`Client(${client.name}, ${client.id}) disconnected`);
+        logger.info(`disconnected Client(${client.name}, ${client.id})`);
         socket.broadcast.emit('leave', {
             name: name,
             color: client.color,
@@ -74,7 +70,11 @@ io.on("connection", (socket) => {
 
     socket.on("message", (data) => {
         const message = data.content;
-        const id = data.id; 
+        const id = validateUUID(data.id);
+        if (id === undefined) {
+            logger.warn(`Invalid id provided '${id}'`);
+            return;
+        } 
 
         if (!messageIsValid(message)) {
             return socket.emit('message', {
@@ -83,11 +83,6 @@ io.on("connection", (socket) => {
                 color: "#C41E3A",
                 timestamp: Date.now()
             })
-        }
-
-        if (!uuidIsValid(id)) {
-            logger.warn(`Invalid id provided '${id}'`);
-            return;
         }
         
         if (message.startsWith('/')) {

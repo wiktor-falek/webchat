@@ -47,7 +47,7 @@
       var name = window.sessionStorage.getItem('name') || window.prompt('Enter your nickname', 'Anonymous') || 'Anonymous';
       window.sessionStorage.setItem('name', name)
       var color = window.sessionStorage.getItem('color') || colorPicker.value || "#000000";
-      window.localStorage.setItem('color', color);
+      window.sessionStorage.setItem('color', color);
       var id = window.sessionStorage.getItem('id');
       
       var socket = io({query: 'name='+name + '&color='+color + '&id='+id});

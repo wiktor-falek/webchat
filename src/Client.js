@@ -1,12 +1,13 @@
 import logger from "./logger.js";
 
+
 class Client {    
     constructor(id, socketId, name, color) {
         this.id = id;
         this.socketId = socketId;
         this.name = name;
         this.color = undefined;
-        logger.debug(`Client(${this.name}, ${this.id}) added`);
+        logger.debug(`created Client(${this.name}, ${this.id})`);
         this.setColor(color);
     }
     setColor(hexString) {
