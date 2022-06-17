@@ -11,7 +11,7 @@ import logger from "./logger.js";
 import Client from './Client.js';
 import ClientStorage from './ClientStorage.js';
 import generateJoinMessage from './utils/generateJoinMessage.js';
-import uuidIsValid from './utils/uuidIsValid.js';
+import validateUUID from './utils/validateUUID.js';
 import messageIsValid from './utils/messageIsValid.js';
 import executeCommand from './helpers/executeCommand.js';
 
@@ -116,11 +116,11 @@ io.on("connection", (socket) => {
         }
 
         socket.to(data.socketId).emit('message', {
-            content: `${message}`, // temporary solution
-            name: `@From ${data.author}`, // template literal Sender
+            content: `${message}`,
+            name: `@From ${data.author}`,
             color: `#66B2FF`,
             timestamp: Date.now()
-        });
+        }); 
 
         const recipientName = ClientStorage.getClientBySocketId(data.socketId).name;
         socket.emit('message', {

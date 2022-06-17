@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import uuidIsValid from './utils/uuidIsValid.js';
+import validateUUID from './utils/validateUUID.js';
 import logger from "./logger.js";
 import Client from "./Client.js";
 
@@ -9,14 +9,7 @@ class ClientStorage {
 
     addClient(name, socketId, color, clientId=undefined) {
         // instantiates and returns a new client with unique id
-        let id;
-        if (uuidIsValid(clientId)) {
-            logger.debug(`Client(${name, clientId}) provided his id`);
-            id = clientId; // if validated set id to uuid provided by client
-        }
-        else {
-            id = uuidv4();
-        }
+        let id = validateUUID(clientId) || uuidv4();
         const client = new Client(id, socketId, name, color);
         this.#clients[id] = client;
         return client;
