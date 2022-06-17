@@ -47,16 +47,8 @@ io.on("connection", (socket) => {
         timestamp: Date.now()
     });
 
-    io.emit('online',
-        ClientStorage.allClientsPublicProperties
-        .map(client => {
-            return {
-                name: client.name,
-                color: client.color,
-                timestamp: Date.now()
-            }
-        })
-    );
+
+    io.emit('online', ClientStorage.all);
 
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);

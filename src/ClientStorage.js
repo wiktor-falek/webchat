@@ -6,48 +6,40 @@ import Client from "./Client.js";
 
 
 class ClientStorage {
-    #clients = {};
-
     addClient(name, socketId, color, clientId=undefined) {
+        this.clients = {};
         // instantiates and returns a new client with unique id
         let id = validateUUID(clientId) || uuidv4();
         const client = new Client(id, socketId, name, color);
-        this.#clients[id] = client;
-        return client;
+        this.clients[id] = client;
         logger.debug(`added to ClientStorage Client(${client.name}, ${client.id})`);
+        return client;
     }
 
     removeClient(client) {
-        delete this.#clients[client.id];
+        delete this.clients[client.id];
         logger.debug(`removed from ClientStorage Client(${client.name}, ${client.id})`);
     }
 
     getClientById(id) {
-        return this.#clients[id];
+        return this.clients[id];
     }
 
     getClientBySocketId(socketId) {
-        for (let client of this.#all) {
+        for (let client of this.clients) {
             if (client.socketId === socketId) {
                 return client;
             }
         }
         return null;
     }
-
+    
     logClients() {
-        console.log(this.#all);
+        console.log(this.all);
     }
     
-    get #all() {
-        return Object.values(this.#clients);
-    }
-
-    get allClientsPublicProperties() {
-        // returns an array of publicProperties object of each client
-        return this.#all.map((client) => {
-            return client.publicProperties;
-        })
+    get all() {
+        return Object.values(this.clients);
     }
 }
 

@@ -120,6 +120,11 @@
         var beforeText = texts[0],
             afterText = texts[1];
 
+        var timeString = new Date(data.timestamp).toLocaleTimeString(); 
+        var time = document.createElement('span');
+        time.textContent = timeString;
+        time.style.color = "#A9A9A9";
+
         var listItem = document.createElement('li');
 
         var before = document.createElement('span');
@@ -134,6 +139,7 @@
         after.style.color = '#eb5e34';
         after.textContent = afterText;
 
+        listItem.appendChild(time);
         listItem.appendChild(before);
         listItem.appendChild(nickname);
         listItem.appendChild(after);
