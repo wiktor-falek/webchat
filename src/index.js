@@ -45,6 +45,7 @@ io.on("connection", (socket) => {
     });
 
 
+    console.log(ClientStorage.all)
     io.emit('online', ClientStorage.all);
 
     socket.on("disconnect", () => {
@@ -55,6 +56,7 @@ io.on("connection", (socket) => {
             color: client.color,
             timestamp: Date.now()
         });
+        io.emit('online', ClientStorage.all);
         logger.info(`disconnected Client(${client.name}, ${client.id})`);
     });
 
@@ -79,19 +81,14 @@ io.on("connection", (socket) => {
             return executeCommand(socket, message);
         }
         
-        try {
-            const client = ClientStorage.getClientById(id);
-            io.emit('message', {
-                content: data.content,
-                name: client.name,
-                color: client.color,
-                timestamp: Date.now()
-            });
-            logger.info(`Client(${client.name}, ${client.id}) said: '${data.content}'`)
-        }
-        catch {
-            logger.debug(`Could not get client with id ${id}`)
-        }
+        io.emit('message', {
+            content: data.content,
+            name: client.name,
+            color: client.color,
+            timestamp: Date.now()
+        });
+        logger.info(`Client(${client.name}, ${client.id}) said: '${data.content}'`)
+
     })
 
     socket.on("privateMessage", (data) => {

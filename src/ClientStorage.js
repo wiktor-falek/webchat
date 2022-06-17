@@ -6,8 +6,10 @@ import Client from "./Client.js";
 
 
 class ClientStorage {
-    addClient(name, socketId, color, clientId=undefined) {
+    constructor() {
         this.clients = {};
+    }
+    addClient(name, socketId, color, clientId=undefined) {
         // instantiates and returns a new client with unique id
         let id = validateUUID(clientId) || uuidv4();
         const client = new Client(id, socketId, name, color);
