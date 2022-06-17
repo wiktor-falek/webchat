@@ -1,14 +1,16 @@
 import logger from "./logger.js";
+import generateJoinMessage from "./utils/generateJoinMessage.js";
 
 
 class Client {
     #id;
+
     constructor(id, socketId, name, color) {
         this.#id = id;
         this.socketId = socketId;
         this.name = name;
+        logger.debug(`created Client(${this.name}, ${this.id})`);
         this.color = undefined;
-        logger.debug(`created Client(${this.name}, ${this.#id})`);
         this.setColor(color);
     }
 
@@ -29,7 +31,6 @@ class Client {
     isVerified(name, id) {
         return (name == this.name && id == this.id);
     }
-
 }
 
 export default Client;

@@ -9,18 +9,14 @@ import path from "path";
 
 import logger from "./logger.js";
 import ClientStorage from './ClientStorage.js';
+import executeCommand from './helpers/executeCommand.js';
 import generateJoinMessage from './utils/generateJoinMessage.js';
 import validateUUID from './utils/validateUUID.js';
 import messageIsValid from './utils/messageIsValid.js';
-import executeCommand from './helpers/executeCommand.js';
 
 
 // express
 const app = express();
-
-app.use(cors({
-    origin: "*"
-}));
 
 app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}));
 
@@ -33,15 +29,16 @@ io.on("connection", (socket) => {
     const name = query['name'];
     const color = query['color'];
     const clientId = validateUUID(query['id']);
+    logger.info(`Client provided clientId ${clientId}`)
 
     const client = ClientStorage.addClient(name, socket.id, color, clientId);
     logger.info(`connected Client(${client.name}, ${client.id})`);
 
-    socket.emit('id', { id: client.id }); // send generated id to client
-    logger.debug(`emitted id ${client.id}`);
+    socket.emit('id', { id: client.id });
 
     socket.broadcast.emit('connection', {
         name: client.name,
+        socketId: client.socketId,
         color: client.color,
         joinMessage: generateJoinMessage(),
         timestamp: Date.now()
@@ -52,12 +49,13 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
-        logger.info(`disconnected Client(${client.name}, ${client.id})`);
         socket.broadcast.emit('leave', {
-            name: name,
+            name: client.name,
+            socketId: client.socketId,
             color: client.color,
             timestamp: Date.now()
         });
+        logger.info(`disconnected Client(${client.name}, ${client.id})`);
     });
 
     socket.on("message", (data) => {
@@ -102,7 +100,8 @@ io.on("connection", (socket) => {
             return;
         }
 
-        socket.to(data.socketId).emit('message', {
+        socket.to(data.socketId).emit('message', 
+        {
             content: `${message}`,
             name: `@From ${data.author}`,
             color: `#66B2FF`,

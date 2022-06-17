@@ -12,9 +12,7 @@ import logger from '../logger.js';
  */
 export default function validateUUID(id) {
     if (uuidValidate(id) && uuidVersion(id) === 4) {
-        logger.debug(`valid uuid provided ${id}`);
         return id;
     }
-    logger.debug(`invalid uuid ${id}`);
     return undefined;
 }

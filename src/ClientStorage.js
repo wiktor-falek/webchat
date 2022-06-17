@@ -12,7 +12,6 @@ class ClientStorage {
         let id = validateUUID(clientId) || uuidv4();
         const client = new Client(id, socketId, name, color);
         this.clients[id] = client;
-        logger.debug(`added to ClientStorage Client(${client.name}, ${client.id})`);
         return client;
     }
 
