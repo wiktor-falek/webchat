@@ -27,7 +27,7 @@ class ClientStorage {
     }
 
     getClientBySocketId(socketId) {
-        for (let client of this.clients) {
+        for (let client of this.all) {
             if (client.socketId === socketId) {
                 return client;
             }

@@ -44,8 +44,6 @@ io.on("connection", (socket) => {
         timestamp: Date.now()
     });
 
-
-    console.log(ClientStorage.all)
     io.emit('online', ClientStorage.all);
 
     socket.on("disconnect", () => {
@@ -93,22 +91,29 @@ io.on("connection", (socket) => {
 
     socket.on("privateMessage", (data) => {
         const message = data.content;
-        if (!messageIsValid(message)) {
-            return;
+        const target = ClientStorage.getClientBySocketId(data.targetId);
+        console.log(target)
+        if (!target) {
+            return socket.emit('message', {
+                content: `${data.targetId} doesn't exist`,
+                name: "[SERVER]",
+                color: "#C41E3A",
+                timestamp: Date.now()
+            })
         }
 
-        socket.to(data.socketId).emit('message', 
+        socket.to(data.targetId).emit('message', 
         {
             content: `${message}`,
-            name: `@From ${data.author}`,
+            name: `@From ${client.name}`,
             color: `#66B2FF`,
             timestamp: Date.now()
         }); 
 
-        const recipientName = ClientStorage.getClientBySocketId(data.socketId).name;
+        
         socket.emit('message', {
             content: `${message}`,
-            name: `@To ${recipientName}`,
+            name: `@To ${target.name}`,
             color: "#66B2FF",
             timestamp: Date.now()
         });
