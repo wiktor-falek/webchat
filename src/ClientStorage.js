@@ -33,12 +33,9 @@ class ClientStorage {
         }
         return null;
     }
-    
-    logClients() {
-        console.log(this.all);
-    }
-    
+
     get all() {
+        // returns an array of all Client objects
         return Object.values(this.clients);
     }
 }
