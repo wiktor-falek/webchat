@@ -9,4 +9,5 @@ Chat application made with socket.io and bootstrap that ~~has~~ will have some c
 - [ ] Private messaging (in progress)
 - [ ] Frontend layout (Soon™)
 - [ ] Multiline input
+- [ ] Name changer
 - [ ] Ip blacklist
