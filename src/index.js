@@ -1,10 +1,9 @@
 import { fileURLToPath } from 'url';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
-import express, { json, urlencoded } from "express";
+import express from "express";
 import http from "http";
 import { Server } from 'socket.io';
 import dotenv from "dotenv"; dotenv.config();
-import cors from "cors";
 import path from "path";
 
 import logger from "./logger.js";
