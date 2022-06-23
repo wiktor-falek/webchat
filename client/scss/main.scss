@@ -1,0 +1,32 @@
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+$bg-color: #EFEFEF;
+
+body {
+    background-color: $bg-color;
+    color: #010334;
+}
+
+input { 
+    font-size: 1.5rem;
+    padding-top: 1vh;
+    background-color: inherit;
+    outline: none;  
+    border: none;
+}
+
+.main-container {
+    height: 100vh;
+}
+
+.styled-div {
+    border: 2px solid grey;
+}
+
+#online {
+    border-bottom: none;
+}
+
+#input {
+    border-right: none;
+}
