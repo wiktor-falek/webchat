@@ -11,7 +11,8 @@
     <div class="container-fluid main-container">
         <div class="row h-75">
             <div id="messages" class="col-md-10">
-                messages
+                <ul>
+                </ul>
             </div>
             <div id="online" class="col-2 d-none d-md-block styled-div">
                 online
@@ -20,9 +21,10 @@
         <div class="row h-25">
 
             <div id="input" class="col-10 styled-div">
-                <input type="text" autofocus>
-                <button>Send</button>
-                
+                <form id='form' action=''>
+                    <textarea name="message" form="form" cols="30" rows="6" placeholder="Type your message here"></textarea>
+                    
+                 </form>
             </div>
 
             <div id="settings" class="col-2 styled-div">

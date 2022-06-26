@@ -7,12 +7,13 @@ body {
     color: #010334;
 }
 
-input { 
+textarea { 
     font-size: 1.5rem;
-    padding-top: 1vh;
-    background-color: inherit;
+    background-color: rgb(201, 198, 198);
     outline: none;  
     border: none;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .main-container {
@@ -28,5 +29,21 @@ input {
 }
 
 #input {
+    position: fixed;
     border-right: none;
+    position: relative;
+}
+
+#messages {
+    height: 100%;
+    overflow: auto;
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        li {
+            border: 1px solid grey;
+        }
+    }
+
 }
