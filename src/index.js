@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'url';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 import express from "express";
-import http from "http";
+import { createServer } from "http";
+import cors from "cors";
 import { Server } from 'socket.io';
 import dotenv from "dotenv"; dotenv.config();
 import path from "path";
@@ -19,13 +20,21 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}));
 
+app.use(cors({origin: '*'}));
+
 // socket.io
-const server = http.createServer(app);
-const io = new Server(server);
+const server = createServer();
+const io = new Server(server, {
+    cors: {
+      origin: "http://localhost:3000",
+      allowedHeaders: ["my-custom-header"],
+      credentials: true
+    }
+  });
 
 io.on("connection", (socket) => {
     const query = socket.request._query;
-    const name = query['name'];
+    const name = query['name'] || "Anonymous";
     const color = query['color'];
     const clientId = validateUUID(query['id']);
     logger.info(`Client provided clientId ${clientId}`)
@@ -33,10 +42,11 @@ io.on("connection", (socket) => {
     const client = ClientStorage.addClient(name, socket.id, color, clientId);
     logger.info(`connected Client(${client.name}, ${client.id})`);
 
-    socket.emit('id', { id: client.id });
+    socket.emit('id', client.id);
 
     socket.broadcast.emit('connection', {
-        name: client.name,
+        name: "[SERVER]",
+        who: client.name,
         socketId: client.socketId,
         color: client.color,
         joinMessage: generateJoinMessage(),
@@ -61,7 +71,7 @@ io.on("connection", (socket) => {
         const message = data.content;
         const id = validateUUID(data.id);
         if (id === undefined) {
-            logger.warn(`Invalid id provided '${id}'`);
+            logger.warn(`Message rejected due to invalid id '${id}'`);
             return;
         } 
 
@@ -79,8 +89,8 @@ io.on("connection", (socket) => {
         }
         
         io.emit('message', {
-            content: data.content,
             name: client.name,
+            content: data.content,
             color: client.color,
             timestamp: Date.now()
         });
