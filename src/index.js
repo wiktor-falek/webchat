@@ -1,11 +1,8 @@
-import { fileURLToPath } from 'url';
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
 import express from "express";
 import { createServer } from "http";
 import cors from "cors";
 import { Server } from 'socket.io';
 import dotenv from "dotenv"; dotenv.config();
-import path from "path";
 
 import logger from "./logger.js";
 import ClientStorage from './ClientStorage.js';
@@ -15,21 +12,19 @@ import validateUUID from './utils/validateUUID.js';
 import messageIsValid from './utils/messageIsValid.js';
 
 
+const SERVER_COLOR = "#C41E3A";
+
 // express
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}));
-
 app.use(cors({origin: '*'}));
-
-const SERVER_COLOR = "#C41E3A";
 
 // socket.io
 const server = createServer();
 const io = new Server(server, {
     cors: {
       origin: "http://localhost:3000",
-      allowedHeaders: ["my-custom-header"],
+      //allowedHeaders: ["my-custom-header"],
       credentials: true
     }
   });
@@ -55,17 +50,17 @@ io.on("connection", (socket) => {
         timestamp: Date.now()
     });
 
-    io.emit('online', ClientStorage.all);
+    io.emit('onlineUsers', ClientStorage.all);
 
     socket.on("disconnect", () => {
         ClientStorage.removeClient(client);
-        socket.broadcast.emit('leave', {
+        socket.broadcast.emit('userLeave', {
             name: client.name,
             socketId: client.socketId,
             color: client.color,
             timestamp: Date.now()
         });
-        io.emit('online', ClientStorage.all);
+        io.emit('onlineUsers', ClientStorage.all);
         logger.info(`disconnected Client(${client.name}, ${client.id})`);
     });
 
