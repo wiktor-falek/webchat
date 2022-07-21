@@ -10,7 +10,7 @@ class Client {
         this.socketId = socketId;
         this.name = name;
         logger.debug(`created Client(${this.name}, ${this.id})`);
-        this.color = "#1f0";
+        this.color = undefined;
         this.setColor(color);
     }
 
