@@ -27,7 +27,7 @@ export default function executeCommand(socket, message) {
             case "help":
             case "h":
                 socket.emit('message', {
-                    content: "\nAVAILABLE COMMANDS\n/help - displays this message\n/ping - ping the server\n/clear - clears screen",
+                    content: "List of available commands:\n/help  - display this message\n/ping  - ping the server\n/clear - clear screen",
                     name: "[SERVER]",
                     color: "#C41E3A",
                     timestamp: Date.now()
@@ -51,7 +51,7 @@ export default function executeCommand(socket, message) {
             // insert boilerplate above
             default:
                 socket.emit('message', {
-                    content: `Invalid command '${message}'`,
+                    content: `Invalid command '${message}'\nType /help for list of commands`,
                     name: "[SERVER]",
                     color: "#C41E3A",
                     timestamp: Date.now()

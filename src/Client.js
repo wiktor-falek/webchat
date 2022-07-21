@@ -10,7 +10,7 @@ class Client {
         this.socketId = socketId;
         this.name = name;
         logger.debug(`created Client(${this.name}, ${this.id})`);
-        this.color = undefined;
+        this.color = "#1f0";
         this.setColor(color);
     }
 
@@ -22,12 +22,13 @@ class Client {
         const regex = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/;
         if (regex.test(hexString)) {
             this.color = hexString;
-            logger.debug(`Client(${this.name}, ${this.id}) set color to ${hexString}`);        
+            logger.info(`Client(${this.name}, ${this.id}) set color to ${hexString}`);        
         }
         else {
             logger.debug(`failed to change color, invalid hexString:${hexString}`);
         }
     }
+
     isVerified(name, id) {
         return (name == this.name && id == this.id);
     }

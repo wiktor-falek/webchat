@@ -22,6 +22,8 @@ app.use(express.static(path.join(__dirname, 'static'), { extensions: ['html']}))
 
 app.use(cors({origin: '*'}));
 
+const SERVER_COLOR = "#C41E3A";
+
 // socket.io
 const server = createServer();
 const io = new Server(server, {
@@ -44,11 +46,11 @@ io.on("connection", (socket) => {
 
     socket.emit('id', client.id);
 
-    socket.broadcast.emit('connection', {
+    socket.broadcast.emit('userJoin', {
         name: "[SERVER]",
+        color: SERVER_COLOR,
         who: client.name,
         socketId: client.socketId,
-        color: client.color,
         joinMessage: generateJoinMessage(),
         timestamp: Date.now()
     });
