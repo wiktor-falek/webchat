@@ -1,5 +1,7 @@
+import dotenv from 'dotenv'; dotenv.config();
+
 import logger from "./logger.js";
-import generateJoinMessage from "./utils/generateJoinMessage.js";
+import validateName from "./utils/usernameIsValid.js";
 
 
 class Client {
@@ -27,6 +29,13 @@ class Client {
         else {
             logger.debug(`failed to change color, invalid hexString:${hexString}`);
         }
+    }
+
+    setName(name) {
+        if (this.name !== undefined) {
+            this.name = validateName(name);
+            logger.info(`Client(${this.name}, ${this.id}) set name to ${name}`); 
+        } 
     }
 
     isVerified(name, id) {

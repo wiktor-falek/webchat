@@ -12,8 +12,6 @@ import validateUUID from './utils/validateUUID.js';
 import messageIsValid from './utils/messageIsValid.js';
 
 
-const SERVER_COLOR = "#C41E3A";
-
 // express
 const app = express();
 
@@ -37,13 +35,14 @@ io.on("connection", (socket) => {
     logger.info(`Client provided clientId ${clientId}`)
 
     const client = ClientStorage.addClient(name, socket.id, color, clientId);
-    logger.info(`connected Client(${client.name}, ${client.id})`);
+    logger.debug(`created Client(${client.name}, ${client.id})`);
 
-    socket.emit('id', client.id);
+    socket.emit('id', client.id); // send private identifier
+    logger.info(`sending client.id ${client.id}`)
 
     socket.broadcast.emit('userJoin', {
-        name: "[SERVER]",
-        color: SERVER_COLOR,
+        name: process.env.SERVER_NAME,
+        color: process.env.SERVER_COLOR,
         who: client.name,
         socketId: client.socketId,
         joinMessage: generateJoinMessage(),
@@ -138,6 +137,21 @@ io.on("connection", (socket) => {
         const color = data.color;
         const client = ClientStorage.getClientById(id);
         client.setColor(color);
+    })
+
+    socket.on("nameChange", (data) => {
+        console.log(ClientStorage.clients);
+        
+        const id = data.id;
+        const newName = data.name;
+        console.log(data.id, data.name); //
+
+        const client = ClientStorage.getClientById(id);
+        if (!client) {
+            console.warn(`couldn't change name, id:${id} client:${client}`)
+            return;
+        }
+        client.setName(newName);
     })
 });
 
