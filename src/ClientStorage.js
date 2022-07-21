@@ -12,7 +12,6 @@ class ClientStorage {
     addClient(name, socketId, color, clientId=undefined) {
         // instantiates and returns a new client with unique id
         let id = validateUUID(clientId) || uuidv4();
-        console.log("creating client with id:" + id); //
         const client = new Client(id, socketId, name, color);
         this.clients[id] = client;
         return client;

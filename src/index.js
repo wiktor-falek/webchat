@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
         }
         
         if (message.startsWith('/')) {
-            return executeCommand(socket, message);
+            return executeCommand(socket, io, message);
         }
         
         io.emit('message', {
