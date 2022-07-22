@@ -1,8 +1,7 @@
 import dotenv from 'dotenv'; dotenv.config();
 
 import logger from "./logger.js";
-import validateName from "./utils/usernameIsValid.js";
-
+import validateName from './utils/validateName.js';
 
 class Client {
     #id;
@@ -32,10 +31,13 @@ class Client {
     }
 
     setName(name) {
-        if (this.name !== undefined) {
-            this.name = validateName(name);
-            logger.info(`Client(${this.name}, ${this.id}) set name to ${name}`); 
-        } 
+        const newName = validateName(name);
+        if (newName) {
+            this.name = newName;
+            logger.info(`Client(${this.name}, ${this.id}) set name to ${newName}`); 
+            return newName;
+        }
+        return null;
     }
 
     isVerified(name, id) {

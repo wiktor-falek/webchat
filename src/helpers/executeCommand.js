@@ -2,22 +2,6 @@ import logger from "../logger.js";
 
 import ClientStorage from "../ClientStorage.js";
 
-/*
-RESPONSE BOILERPLATE
-
-case "":
-    socket.emit('message', {
-        content: "",
-        name: "[SERVER]",
-        color: "#C41E3A",
-        timestamp: Date.now()
-    })
-    return;
-
-
-
-*/
-
 
 export default function executeCommand(socket, io, message) {
     const params = message.trim().slice(1).split(" ");
@@ -53,9 +37,16 @@ export default function executeCommand(socket, io, message) {
                 if (!client) {
                     return;
                 }
-                console.log(client)
-                const newName = args[0];
-                client.setName(newName);
+                const oldName = client.name;
+                const newName = client.setName(args[0]);
+                if (!newName) {
+                    socket.emit('message', {
+                        content: `Couldn't change nickname to ${newName}`,
+                        name: "[SERVER]",
+                        color: "#C41E3A",
+                        timestamp: Date.now()
+                    })
+                }
                 socket.emit('message', {
                     content: `Your nickname has been changed to ${newName}`,
                     name: "[SERVER]",
@@ -63,6 +54,12 @@ export default function executeCommand(socket, io, message) {
                     timestamp: Date.now()
                 })
                 io.emit('onlineUsers', ClientStorage.all);
+                socket.broadcast.emit('message', {
+                    content: `${oldName} set nickname to ${newName}`,
+                    name: "[SERVER]",
+                    color: "#C41E3A",
+                    timestamp: Date.now()
+                })
                 return;
 
                 // template
@@ -84,7 +81,7 @@ export default function executeCommand(socket, io, message) {
         }
     }
     catch (e) {
-        logger.error(`parseCommand exception: ${e}`);
+        logger.error(`executeCommand exception: ${e}`);
     }
 }
 
