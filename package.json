@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "dev": "npm run free-port && nodemon .",
+    "dev": "npm run free-port & nodemon .",
     "free-port": "fuser -k -TERM -n tcp 6969"
   },
   "repository": {
