@@ -40,12 +40,15 @@ export default function executeCommand(socket, io, message) {
                 const oldName = client.name;
                 const newName = client.setName(args[0]);
                 if (!newName) {
+                    const NAME_MAXLEN = process.env.NAME_MAXLEN || "32";
                     socket.emit('message', {
-                        content: `Couldn't change nickname to ${newName}`,
+                        // content: `Couldn't change nickname, ${errorMsg}`,
+                        content: `Couldn't change nickname\nTry something else!\nKeep in mind nickname length is limted to ${NAME_MAXLEN}`,
                         name: "[SERVER]",
                         color: "#C41E3A",
                         timestamp: Date.now()
                     })
+                    return;
                 }
                 socket.emit('message', {
                     content: `Your nickname has been changed to ${newName}`,

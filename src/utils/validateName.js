@@ -6,7 +6,7 @@ function validateName(oldName) {
         name !== undefined &&
         name !== null &&
         name !== "" &&
-        name.length <= process.env.MESSAGE_MAXLEN || 32 &&
+        name.length <= (parseInt(process.env.NAME_MAXLEN) || 32) &&
         name.toUpperCase() !== "[SERVER]"
         ) {
             return name.replace(/\n|\r/g, ""); // remove \n
