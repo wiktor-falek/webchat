@@ -11,7 +11,7 @@ function validateName(oldName) {
         name !== null &&
         name !== "" &&
         name.length <= (process.env.NAME_MAXLEN || 32) &&
-        name.toUpperCase() !== "[SERVER]"
+        name.toUpperCase() !== process.env.SERVER_NAME
         ) {
             return name.replace(/\n|\r/g, ""); // remove \n
         }

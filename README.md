@@ -13,3 +13,4 @@ Frontend https://github.com/wiktor-falek/webchat-frontend
 
 ## Tasks:
 - [ ] Nickname change error messages
+- [ ] Accept nicknames with spaces, just trim

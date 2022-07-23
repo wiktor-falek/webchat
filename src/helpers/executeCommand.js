@@ -1,5 +1,6 @@
-import logger from "../logger.js";
+import dotenv from "dotenv"; dotenv.config();
 
+import logger from "../logger.js";
 import ClientStorage from "../ClientStorage.js";
 
 
@@ -15,20 +16,20 @@ export default function executeCommand(socket, io, message) {
                 socket.emit('message', {
                     content: 
                     "List of available commands:\n" +
-                    "/help  - display this message\n" +
-                    "/ping  - ping the server\n" +
-                    "/clear - clear screen\n" +
-                    "/nick \`new_nick\`",
-                    name: "[SERVER]",
-                    color: "#C41E3A",
+                    "/help            - display this message\n" +
+                    "/ping            - ping the server\n" +
+                    "/clear           - clear screen\n" +
+                    "/nick \`new_nick\` - change nickname",
+                    name: process.env.SERVER_NAME,
+                    color: process.env.SERVER_COLOR,
                     timestamp: Date.now()
                 })
                 return;
             case "ping":
                 socket.emit('message', {
                     content: "pong",
-                    name: "[SERVER]",
-                    color: "#C41E3A",
+                    name: process.env.SERVER_NAME,
+                    color: process.env.SERVER_COLOR,
                     timestamp: Date.now()
                 })
                 return;
@@ -38,29 +39,34 @@ export default function executeCommand(socket, io, message) {
                     return;
                 }
                 const oldName = client.name;
-                const newName = client.setName(args[0]);
+                const newName = client.setName(args.join(" "));
+
                 if (!newName) {
                     const NAME_MAXLEN = process.env.NAME_MAXLEN || "32";
                     socket.emit('message', {
                         // content: `Couldn't change nickname, ${errorMsg}`,
                         content: `Couldn't change nickname\nTry something else\nKeep in mind nickname length is limted to ${NAME_MAXLEN}`,
-                        name: "[SERVER]",
-                        color: "#C41E3A",
+                        name: process.env.SERVER_NAME,
+                        color: process.env.SERVER_COLOR,
                         timestamp: Date.now()
                     })
                     return;
                 }
+                io.emit('onlineUsers', ClientStorage.all);
+
+                socket.emit('nameChange', newName);
+
                 socket.emit('message', {
                     content: `Your nickname has been changed to ${newName}`,
-                    name: "[SERVER]",
-                    color: "#C41E3A",
+                    name: process.env.SERVER_NAME,
+                    color: process.env.SERVER_COLOR,
                     timestamp: Date.now()
                 })
-                io.emit('onlineUsers', ClientStorage.all);
+
                 socket.broadcast.emit('message', {
                     content: `${oldName} set nickname to ${newName}`,
-                    name: "[SERVER]",
-                    color: "#C41E3A",
+                    name: process.env.SERVER_NAME,
+                    color: process.env.SERVER_COLOR,
                     timestamp: Date.now()
                 })
                 return;
@@ -68,16 +74,16 @@ export default function executeCommand(socket, io, message) {
                 // template
                 socket.emit('message', {
                     content: "",
-                    name: "[SERVER]",
-                    color: "#C41E3A",
+                    name: process.env.SERVER_NAME,
+                    color: process.env.SERVER_COLOR,
                     timestamp: Date.now()
                 })
                 return;
             default:
                 socket.emit('message', {
                     content: `Invalid command '${message}'\nType /help for list of commands`,
-                    name: "[SERVER]",
-                    color: "#C41E3A",
+                    name: process.env.SERVER_NAME,
+                    color: process.env.SERVER_COLOR,
                     timestamp: Date.now()
                 });
                 return;

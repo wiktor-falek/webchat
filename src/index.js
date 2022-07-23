@@ -21,9 +21,9 @@ app.use(cors({origin: '*'}));
 const server = createServer();
 const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: "*",
       //allowedHeaders: ["my-custom-header"],
-      credentials: true
+      credentials: false
     }
   });
 
@@ -73,9 +73,9 @@ io.on("connection", (socket) => {
 
         if (!messageIsValid(message)) {
             return socket.emit('message', {
-                content: "Illegal message, you're going to jail",
-                name: "[SERVER]",
-                color: "#C41E3A",
+                content: `Message too long, limited to ${process.env.MESSAGE_MAXLEN}`,
+                name: process.env.SERVER_NAME,
+                color: process.env.SERVER_COLOR,
                 timestamp: Date.now()
             })
         }
@@ -101,8 +101,8 @@ io.on("connection", (socket) => {
         if (!target) {
             return socket.emit('message', {
                 content: `${data.targetId} doesn't exist`,
-                name: "[SERVER]",
-                color: "#C41E3A",
+                name: process.env.SERVER_NAME,
+                color: process.env.SERVER_COLOR,
                 timestamp: Date.now()
             })
         }
