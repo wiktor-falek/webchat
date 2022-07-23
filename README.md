@@ -5,12 +5,12 @@ Frontend https://github.com/wiktor-falek/webchat-frontend
 
 ## Features:
 - [x] Random join messages
-- [x] Custom user color  
+- [x] Custom user colors
 - [x] Slash commands
 - [x] Private messaging
-- [x] Name changer
-- [ ] Ip blacklist
+- [x] Name changing
+- [ ] Ip blacklist?
 
 ## Tasks:
-- [ ] Nickname change error messages
-- [ ] Accept nicknames with spaces, just trim
+
+Nickname change error messages
